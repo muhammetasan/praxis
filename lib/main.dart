@@ -267,12 +267,13 @@ class _MyHomePageState extends State<MyHomePage> {
                   ),
                 ),
                 const SizedBox(width: 24),
-                // Bottom-Right: Services, Opening Hours, and Contact Form side-by-side
+                // Bottom-Right: Services/Hours and Contact Form side-by-side
                 Expanded(
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Expanded(
+                        flex: 1,
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: const [
@@ -292,14 +293,7 @@ class _MyHomePageState extends State<MyHomePage> {
                             Text('• Akupunktur', style: TextStyle(color: Color(0xFF002c57), fontSize: 16)),
                             SizedBox(height: 4),
                             Text('• Physikalische und Rehabilitative Medizin', style: TextStyle(color: Color(0xFF002c57), fontSize: 16)),
-                          ],
-                        ),
-                      ),
-                      const SizedBox(width: 24),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: const [
+                            SizedBox(height: 24),
                             Text(
                               'Opening Hours',
                               style: TextStyle(
