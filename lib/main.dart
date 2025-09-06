@@ -60,6 +60,37 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  late PageController _pageController;
+  int _currentPage = 0;
+
+  // TODO: Replace with your actual image filenames
+  final List<String> clinicImages = [
+    'assets/clinic/01.jpg',
+    'assets/clinic/02.jpg',
+    'assets/clinic/03.jpg',
+    'assets/clinic/04.jpg',
+    'assets/clinic/05.jpg',
+    'assets/clinic/06.jpg',
+  ];
+
+  @override
+  void initState() {
+    super.initState();
+    // Initialize PageController here. Viewport fraction will be set in build methods.
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // This is empty now to avoid re-creating controllers unnecessarily
+  }
+
+  @override
+  void dispose() {
+    _pageController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     // This method is rerun every time setState is called, for instance as done
@@ -174,12 +205,12 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   Widget _buildDesktopLayout() {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(24.0, 12.0, 24.0, 12.0),
-      child: Column(
-        children: [
-          Expanded(
-            child: Row(
+    return SingleChildScrollView(
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(24.0, 12.0, 24.0, 24.0),
+        child: Column(
+          children: [
+            Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 // Top-Left: Logo
@@ -194,42 +225,38 @@ class _MyHomePageState extends State<MyHomePage> {
                 const SizedBox(width: 24),
                 // Top-Right: Biography
                 Expanded(
-                  child: SingleChildScrollView(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: const [
-                        Text(
-                          'Firat Polat',
-                          style: TextStyle(
-                            fontSize: 24,
-                            fontWeight: FontWeight.bold,
-                            color: Color(0xFF002c57),
-                          ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: const [
+                      Text(
+                        'Firat Polat',
+                        style: TextStyle(
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold,
+                          color: Color(0xFF002c57),
                         ),
-                        SizedBox(height: 4),
-                        Text(
-                          'Dr Tip (Trakya Univ.)',
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.w500,
-                            color: Color(0xFF002c57),
-                          ),
+                      ),
+                      SizedBox(height: 4),
+                      Text(
+                        'Dr Tip (Trakya Univ.)',
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.w500,
+                          color: Color(0xFF002c57),
                         ),
-                        SizedBox(height: 12),
-                        Text(
-                          'Firat Polat is a specialist in Physical and Rehabilitative Medicine with extensive experience from various clinics in Berlin. His work focuses on pain therapy (Schmerztherapie), manual medicine (Manuelle Medizin), and acupuncture (Akupunktur) to help patients regain their mobility and well-being.',
-                          style: TextStyle(fontSize: 16, height: 1.5, color: Color(0xFF002c57)),
-                        ),
-                      ],
-                    ),
+                      ),
+                      SizedBox(height: 12),
+                      Text(
+                        'Firat Polat is a specialist in Physical and Rehabilitative Medicine with extensive experience from various clinics in Berlin. His work focuses on pain therapy (Schmerztherapie), manual medicine (Manuelle Medizin), and acupuncture (Akupunktur) to help patients regain their mobility and well-being.',
+                        style: TextStyle(fontSize: 16, height: 1.5, color: Color(0xFF002c57)),
+                      ),
+                    ],
                   ),
                 ),
               ],
             ),
-          ),
-          const SizedBox(height: 0.0),
-          Expanded(
-            child: Row(
+            const SizedBox(height: 24),
+            Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 // Bottom-Left: Services
@@ -281,8 +308,10 @@ class _MyHomePageState extends State<MyHomePage> {
                 ),
               ],
             ),
-          ),
-        ],
+            const SizedBox(height: 32),
+            _buildClinicGallery(isMobile: false),
+          ],
+        ),
       ),
     );
   }
@@ -353,9 +382,90 @@ class _MyHomePageState extends State<MyHomePage> {
               'Monday - Friday: 9:00 - 18:00',
               style: TextStyle(fontSize: 16, color: Color(0xFF002c57)),
             ),
+            const SizedBox(height: 32),
+            _buildClinicGallery(isMobile: true),
           ],
         ),
       ),
+    );
+  }
+
+  Widget _buildClinicGallery({required bool isMobile}) {
+    final double viewportFraction = isMobile ? 0.9 : 0.45;
+    _pageController = PageController(
+      initialPage: 5000, // Start in the middle of the "infinite" list
+      viewportFraction: viewportFraction,
+    );
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text(
+          'Our Clinic',
+          style: TextStyle(
+            fontSize: 22,
+            fontWeight: FontWeight.bold,
+            color: Color(0xFF002c57),
+          ),
+        ),
+        const SizedBox(height: 16),
+        SizedBox(
+          height: 300, // Define a consistent height for the carousel
+          child: Stack(
+            alignment: Alignment.center,
+            children: [
+              PageView.builder(
+                controller: _pageController,
+                // No itemCount needed for a truly infinite scroll
+                onPageChanged: (int page) {
+                  setState(() {
+                    _currentPage = page;
+                  });
+                },
+                itemBuilder: (context, index) {
+                  final int realIndex = index % clinicImages.length;
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(8.0),
+                      child: Image.asset(
+                        clinicImages[realIndex],
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                  );
+                },
+              ),
+              // Left Arrow
+              Align(
+                alignment: Alignment.centerLeft,
+                child: IconButton(
+                  icon: const Icon(Icons.arrow_back_ios, color: Colors.white70, size: 30),
+                  onPressed: () {
+                    _pageController.previousPage(
+                      duration: const Duration(milliseconds: 300),
+                      curve: Curves.easeInOut,
+                    );
+                  },
+                ),
+              ),
+              // Right Arrow
+              Align(
+                alignment: Alignment.centerRight,
+                child: IconButton(
+                  icon: const Icon(Icons.arrow_forward_ios, color: Colors.white70, size: 30),
+                  onPressed: () {
+                    _pageController.nextPage(
+                      duration: const Duration(milliseconds: 300),
+                      curve: Curves.easeInOut,
+                    );
+                  },
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
     );
   }
 }
