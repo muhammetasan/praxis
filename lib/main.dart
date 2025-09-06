@@ -70,14 +70,14 @@ class _MyHomePageState extends State<MyHomePage> {
     // than having to individually change instances of widgets.
     return Scaffold(
       appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(120.0), // Provide a max height
+        preferredSize: const Size.fromHeight(130.0), // Increased max height
         child: Container(
           decoration: const BoxDecoration(
             color: Colors.white,
             border: Border(bottom: BorderSide(color: Color(0xFF002c57), width: 1.0)),
           ),
           child: Padding(
-            padding: const EdgeInsets.fromLTRB(16.0, 8.0, 16.0, 12.0),
+            padding: const EdgeInsets.fromLTRB(16.0, 12.0, 16.0, 16.0), // Increased vertical padding
             child: SafeArea(
               child: Wrap(
                 spacing: 16.0,
