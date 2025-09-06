@@ -62,6 +62,7 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   late PageController _pageController;
   int _currentPage = 0;
+  final _formKey = GlobalKey<FormState>();
 
   // TODO: Replace with your actual image filenames
   final List<String> clinicImages = [
@@ -216,6 +217,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 // Top-Left: Logo
                 SizedBox(
                   width: 300, // Constrains the width of the left column
+                  height: 250, // Match the gallery height for alignment
                   child: Image.asset(
                     'assets/firat.png',
                     fit: BoxFit.contain,
@@ -223,8 +225,19 @@ class _MyHomePageState extends State<MyHomePage> {
                   ),
                 ),
                 const SizedBox(width: 24),
-                // Top-Right: Biography
+                // Top-Right: Image Gallery
                 Expanded(
+                  child: _buildClinicGallery(isMobile: false),
+                ),
+              ],
+            ),
+            const SizedBox(height: 24),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Bottom-Left: Biography
+                SizedBox(
+                  width: 300, // Constrains the width of the left column
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: const [
@@ -253,63 +266,66 @@ class _MyHomePageState extends State<MyHomePage> {
                     ],
                   ),
                 ),
-              ],
-            ),
-            const SizedBox(height: 24),
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // Bottom-Left: Services
-                SizedBox(
-                  width: 300, // Constrains the width of the left column
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: const [
-                      Text(
-                        'Services Offered',
-                        style: TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                          color: Color(0xFF002c57),
-                        ),
-                      ),
-                      SizedBox(height: 8),
-                      Text('• Schmerztherapie', style: TextStyle(color: Color(0xFF002c57), fontSize: 16)),
-                      SizedBox(height: 4),
-                      Text('• Manuelle Medizin', style: TextStyle(color: Color(0xFF002c57), fontSize: 16)),
-                      SizedBox(height: 4),
-                      Text('• Akupunktur', style: TextStyle(color: Color(0xFF002c57), fontSize: 16)),
-                      SizedBox(height: 4),
-                      Text('• Physikalische und Rehabilitative Medizin', style: TextStyle(color: Color(0xFF002c57), fontSize: 16)),
-                    ],
-                  ),
-                ),
                 const SizedBox(width: 24),
-                // Bottom-Right: Opening Hours
+                // Bottom-Right: Services, Opening Hours, and Contact Form side-by-side
                 Expanded(
-                  child: Column(
+                  child: Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
-                    children: const [
-                      Text(
-                        'Opening Hours',
-                        style: TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                          color: Color(0xFF002c57),
+                    children: [
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: const [
+                            Text(
+                              'Services Offered',
+                              style: TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                                color: Color(0xFF002c57),
+                              ),
+                            ),
+                            SizedBox(height: 8),
+                            Text('• Schmerztherapie', style: TextStyle(color: Color(0xFF002c57), fontSize: 16)),
+                            SizedBox(height: 4),
+                            Text('• Manuelle Medizin', style: TextStyle(color: Color(0xFF002c57), fontSize: 16)),
+                            SizedBox(height: 4),
+                            Text('• Akupunktur', style: TextStyle(color: Color(0xFF002c57), fontSize: 16)),
+                            SizedBox(height: 4),
+                            Text('• Physikalische und Rehabilitative Medizin', style: TextStyle(color: Color(0xFF002c57), fontSize: 16)),
+                          ],
                         ),
                       ),
-                      SizedBox(height: 8),
-                      Text(
-                        'Monday - Friday: 9:00 - 18:00',
-                        style: TextStyle(fontSize: 16, color: Color(0xFF002c57)),
+                      const SizedBox(width: 24),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: const [
+                            Text(
+                              'Opening Hours',
+                              style: TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                                color: Color(0xFF002c57),
+                              ),
+                            ),
+                            SizedBox(height: 8),
+                            Text(
+                              'Monday - Friday: 9:00 - 18:00',
+                              style: TextStyle(fontSize: 16, color: Color(0xFF002c57)),
+                            ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(width: 24),
+                      Expanded(
+                        flex: 2, // Give contact form more space
+                        child: _buildContactForm(),
                       ),
                     ],
                   ),
                 ),
               ],
             ),
-            const SizedBox(height: 32),
-            _buildClinicGallery(isMobile: false),
           ],
         ),
       ),
@@ -384,6 +400,8 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
             const SizedBox(height: 32),
             _buildClinicGallery(isMobile: true),
+            const SizedBox(height: 32),
+            _buildContactForm(),
           ],
         ),
       ),
@@ -397,75 +415,138 @@ class _MyHomePageState extends State<MyHomePage> {
       viewportFraction: viewportFraction,
     );
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const Text(
-          'Our Clinic',
-          style: TextStyle(
-            fontSize: 22,
-            fontWeight: FontWeight.bold,
-            color: Color(0xFF002c57),
-          ),
-        ),
-        const SizedBox(height: 16),
-        SizedBox(
-          height: 300, // Define a consistent height for the carousel
-          child: Stack(
-            alignment: Alignment.center,
-            children: [
-              PageView.builder(
-                controller: _pageController,
-                // No itemCount needed for a truly infinite scroll
-                onPageChanged: (int page) {
-                  setState(() {
-                    _currentPage = page;
-                  });
-                },
-                itemBuilder: (context, index) {
-                  final int realIndex = index % clinicImages.length;
-                  return Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(8.0),
-                      child: Image.asset(
-                        clinicImages[realIndex],
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                  );
-                },
-              ),
-              // Left Arrow
-              Align(
-                alignment: Alignment.centerLeft,
-                child: IconButton(
-                  icon: const Icon(Icons.arrow_back_ios, color: Colors.white70, size: 30),
-                  onPressed: () {
-                    _pageController.previousPage(
-                      duration: const Duration(milliseconds: 300),
-                      curve: Curves.easeInOut,
-                    );
-                  },
+    return SizedBox(
+      height: 250, // Define a consistent height for the carousel
+      child: Stack(
+        alignment: Alignment.center,
+        children: [
+          PageView.builder(
+            controller: _pageController,
+            // No itemCount needed for a truly infinite scroll
+            onPageChanged: (int page) {
+              setState(() {
+                _currentPage = page;
+              });
+            },
+            itemBuilder: (context, index) {
+              final int realIndex = index % clinicImages.length;
+              return Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(8.0),
+                  child: Image.asset(
+                    clinicImages[realIndex],
+                    fit: BoxFit.cover,
+                  ),
                 ),
-              ),
-              // Right Arrow
-              Align(
-                alignment: Alignment.centerRight,
-                child: IconButton(
-                  icon: const Icon(Icons.arrow_forward_ios, color: Colors.white70, size: 30),
-                  onPressed: () {
-                    _pageController.nextPage(
-                      duration: const Duration(milliseconds: 300),
-                      curve: Curves.easeInOut,
-                    );
-                  },
-                ),
-              ),
-            ],
+              );
+            },
           ),
-        ),
-      ],
+          // Left Arrow
+          Align(
+            alignment: Alignment.centerLeft,
+            child: IconButton(
+              icon: const Icon(Icons.arrow_back_ios, color: Colors.white70, size: 30),
+              onPressed: () {
+                _pageController.previousPage(
+                  duration: const Duration(milliseconds: 300),
+                  curve: Curves.easeInOut,
+                );
+              },
+            ),
+          ),
+          // Right Arrow
+          Align(
+            alignment: Alignment.centerRight,
+            child: IconButton(
+              icon: const Icon(Icons.arrow_forward_ios, color: Colors.white70, size: 30),
+              onPressed: () {
+                _pageController.nextPage(
+                  duration: const Duration(milliseconds: 300),
+                  curve: Curves.easeInOut,
+                );
+              },
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildContactForm() {
+    return Form(
+      key: _formKey,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text(
+            'Contact Us',
+            style: TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+              color: Color(0xFF002c57),
+            ),
+          ),
+          const SizedBox(height: 16),
+          TextFormField(
+            decoration: const InputDecoration(
+              labelText: 'Name',
+              border: OutlineInputBorder(),
+            ),
+            validator: (value) {
+              if (value == null || value.isEmpty) {
+                return 'Please enter your name';
+              }
+              return null;
+            },
+          ),
+          const SizedBox(height: 12),
+          TextFormField(
+            decoration: const InputDecoration(
+              labelText: 'Email',
+              border: OutlineInputBorder(),
+            ),
+            validator: (value) {
+              if (value == null || value.isEmpty || !value.contains('@')) {
+                return 'Please enter a valid email';
+              }
+              return null;
+            },
+          ),
+          const SizedBox(height: 12),
+          TextFormField(
+            decoration: const InputDecoration(
+              labelText: 'Message',
+              border: OutlineInputBorder(),
+              alignLabelWithHint: true,
+            ),
+            maxLines: 4,
+            validator: (value) {
+              if (value == null || value.isEmpty) {
+                return 'Please enter your message';
+              }
+              return null;
+            },
+          ),
+          const SizedBox(height: 16),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: const Color(0xFF002c57),
+              foregroundColor: Colors.white,
+              padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
+            ),
+            onPressed: () {
+              if (_formKey.currentState!.validate()) {
+                // TODO: Implement email sending logic
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('Sending Message...')),
+                );
+              }
+            },
+            child: const Text('Send'),
+          ),
+        ],
+      ),
     );
   }
 }
