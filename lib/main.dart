@@ -269,7 +269,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: const [
                       Text(
-                        'Firat Polat',
+                        'Muhammet Asan',
                         style: TextStyle(
                           fontSize: 24,
                           fontWeight: FontWeight.bold,
@@ -278,7 +278,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       ),
                       SizedBox(height: 4),
                       Text(
-                        'Dr Tip (Trakya Univ.)',
+                        'Dr Tip (Ankara Univ.)',
                         style: TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.w500,
@@ -287,7 +287,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       ),
                       SizedBox(height: 12),
                       Text(
-                        'Firat Polat is a specialist in Physical and Rehabilitative Medicine with extensive experience from various clinics in Berlin. His work focuses on pain therapy (Schmerztherapie), manual medicine (Manuelle Medizin), and acupuncture (Akupunktur) to help patients regain their mobility and well-being.',
+                        'Muhammet Asan is a specialist in Physical and Rehabilitative Medicine with extensive experience from various clinics in Berlin. His work focuses on pain therapy (Schmerztherapie), manual medicine (Manuelle Medizin), and acupuncture (Akupunktur) to help patients regain their mobility and well-being.',
                         style: TextStyle(fontSize: 16, height: 1.5, color: Color(0xFF002c57)),
                       ),
                     ],
