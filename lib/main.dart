@@ -183,18 +183,15 @@ class _MyHomePageState extends State<MyHomePage> {
                       _launchURL('https://www.doctolib.de/praxis/berlin/orthorpm');
                     },
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFF00b39b), // Doctolib color
+                      backgroundColor: const Color(0xFF002c57), // Primary dark blue
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8),
                       ),
                       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                     ),
-                    child: const Text(
-                      'Book Online',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                      ),
+                    child: Image.asset(
+                      'assets/doctolib.png',
+                      height: 20,
                     ),
                   ),
                    const SizedBox(width: 16),

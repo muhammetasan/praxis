@@ -63,6 +63,7 @@ flutter:
     - assets/firat.png
     - assets/clinicLogo.png
     - assets/clinic/
+    - assets/doctolib.png
 
 
   # An image asset can refer to one or more resolution-specific "variants", see
