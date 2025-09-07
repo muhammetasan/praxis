@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 void main() {
   runApp(const MyApp());
@@ -64,6 +65,19 @@ class _MyHomePageState extends State<MyHomePage> {
   int _currentPage = 0;
   final _formKey = GlobalKey<FormState>();
 
+  // Function to launch a URL
+  void _launchURL(String url) async {
+    final Uri uri = Uri.parse(url);
+    if (!await launchUrl(uri, mode: LaunchMode.externalApplication)) {
+      // Could not launch the URL
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Could not launch $url')),
+        );
+      }
+    }
+  }
+
   // TODO: Replace with your actual image filenames
   final List<String> clinicImages = [
     'assets/clinic/01.jpg',
@@ -111,15 +125,14 @@ class _MyHomePageState extends State<MyHomePage> {
           child: Padding(
             padding: const EdgeInsets.fromLTRB(16.0, 12.0, 16.0, 16.0), // Increased vertical padding
             child: SafeArea(
-              child: Wrap(
-                spacing: 16.0,
-                runSpacing: 8.0,
-                crossAxisAlignment: WrapCrossAlignment.center,
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Image.asset(
                     'assets/clinicLogo.png',
                     height: 40, // Adjust height to fit in AppBar
                   ),
+                  const SizedBox(width: 16),
                   const Text(
                     'orthoRPM',
                     style: TextStyle(
@@ -128,6 +141,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       fontWeight: FontWeight.bold,
                     ),
                   ),
+                  const SizedBox(width: 16),
                   const Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
@@ -139,6 +153,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       ),
                     ],
                   ),
+                  const SizedBox(width: 16),
                   const Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
@@ -150,6 +165,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       ),
                     ],
                   ),
+                  const SizedBox(width: 16),
                   const Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
@@ -161,6 +177,27 @@ class _MyHomePageState extends State<MyHomePage> {
                       ),
                     ],
                   ),
+                  const Spacer(), // Pushes the icons to the right
+                  ElevatedButton(
+                    onPressed: () {
+                      _launchURL('https://www.doctolib.de/praxis/berlin/orthorpm');
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color(0xFF00b39b), // Doctolib color
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                    ),
+                    child: const Text(
+                      'Book Online',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                   const SizedBox(width: 16),
                   Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
@@ -175,14 +212,7 @@ class _MyHomePageState extends State<MyHomePage> {
                         icon: const Icon(Icons.facebook),
                         color: const Color(0xFF002c57),
                         onPressed: () {
-                          // TODO: Implement Facebook link
-                        },
-                      ),
-                      IconButton(
-                        icon: const Icon(Icons.email),
-                        color: const Color(0xFF002c57),
-                        onPressed: () {
-                          // TODO: Implement Email action
+                           // TODO: Implement Facebook link
                         },
                       ),
                     ],
@@ -195,7 +225,7 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
       body: LayoutBuilder(
         builder: (context, constraints) {
-          if (constraints.maxWidth < 768) {
+          if (constraints.maxWidth < 600) {
             return _buildMobileLayout();
           } else {
             return _buildDesktopLayout();
@@ -313,7 +343,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       const SizedBox(width: 24),
                       Expanded(
                         flex: 2, // Give contact form more space
-                        child: _buildContactForm(),
+                        child: _buildContactForm(isMobile: false),
                       ),
                     ],
                   ),
@@ -333,16 +363,20 @@ class _MyHomePageState extends State<MyHomePage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Image.asset(
-              'assets/firat.png',
-              fit: BoxFit.contain,
-              alignment: Alignment.centerLeft,
+            SizedBox(
+              height: 220,
+              width: double.infinity,
+              child: Image.asset(
+                'assets/firat.png',
+                fit: BoxFit.contain,
+                alignment: Alignment.centerLeft,
+              ),
             ),
             const SizedBox(height: 24),
             const Text(
               'Firat Polat',
               style: TextStyle(
-                fontSize: 24,
+                fontSize: 22,
                 fontWeight: FontWeight.bold,
                 color: Color(0xFF002c57),
               ),
@@ -351,7 +385,7 @@ class _MyHomePageState extends State<MyHomePage> {
             const Text(
               'Dr Tip (Trakya Univ.)',
               style: TextStyle(
-                fontSize: 18,
+                fontSize: 16,
                 fontWeight: FontWeight.w500,
                 color: Color(0xFF002c57),
               ),
@@ -359,30 +393,30 @@ class _MyHomePageState extends State<MyHomePage> {
             const SizedBox(height: 12),
             const Text(
               'Firat Polat is a specialist in Physical and Rehabilitative Medicine with extensive experience from various clinics in Berlin. His work focuses on pain therapy (Schmerztherapie), manual medicine (Manuelle Medizin), and acupuncture (Akupunktur) to help patients regain their mobility and well-being.',
-              style: TextStyle(fontSize: 16, height: 1.5, color: Color(0xFF002c57)),
+              style: TextStyle(fontSize: 15, height: 1.5, color: Color(0xFF002c57)),
             ),
             const SizedBox(height: 24),
             const Text(
               'Services Offered',
               style: TextStyle(
-                fontSize: 20,
+                fontSize: 18,
                 fontWeight: FontWeight.bold,
                 color: Color(0xFF002c57),
               ),
             ),
             const SizedBox(height: 8),
-            const Text('• Schmerztherapie', style: TextStyle(color: Color(0xFF002c57), fontSize: 16)),
+            const Text('• Schmerztherapie', style: TextStyle(color: Color(0xFF002c57), fontSize: 15)),
             const SizedBox(height: 4),
-            const Text('• Manuelle Medizin', style: TextStyle(color: Color(0xFF002c57), fontSize: 16)),
+            const Text('• Manuelle Medizin', style: TextStyle(color: Color(0xFF002c57), fontSize: 15)),
             const SizedBox(height: 4),
-            const Text('• Akupunktur', style: TextStyle(color: Color(0xFF002c57), fontSize: 16)),
+            const Text('• Akupunktur', style: TextStyle(color: Color(0xFF002c57), fontSize: 15)),
             const SizedBox(height: 4),
-            const Text('• Physikalische und Rehabilitative Medizin', style: TextStyle(color: Color(0xFF002c57), fontSize: 16)),
+            const Text('• Physikalische und Rehabilitative Medizin', style: TextStyle(color: Color(0xFF002c57), fontSize: 15)),
             const SizedBox(height: 24),
             const Text(
               'Opening Hours',
               style: TextStyle(
-                fontSize: 20,
+                fontSize: 18,
                 fontWeight: FontWeight.bold,
                 color: Color(0xFF002c57),
               ),
@@ -390,12 +424,12 @@ class _MyHomePageState extends State<MyHomePage> {
             const SizedBox(height: 8),
             const Text(
               'Monday - Friday: 9:00 - 18:00',
-              style: TextStyle(fontSize: 16, color: Color(0xFF002c57)),
+              style: TextStyle(fontSize: 15, color: Color(0xFF002c57)),
             ),
             const SizedBox(height: 32),
             _buildClinicGallery(isMobile: true),
             const SizedBox(height: 32),
-            _buildContactForm(),
+            _buildContactForm(isMobile: true),
           ],
         ),
       ),
@@ -410,7 +444,7 @@ class _MyHomePageState extends State<MyHomePage> {
     );
 
     return SizedBox(
-      height: 250, // Define a consistent height for the carousel
+      height: isMobile ? 220 : 250, // Define a consistent height for the carousel
       child: Stack(
         alignment: Alignment.center,
         children: [
@@ -467,18 +501,18 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
-  Widget _buildContactForm() {
+  Widget _buildContactForm({required bool isMobile}) {
     return Form(
       key: _formKey,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
+          Text(
             'Contact Us',
             style: TextStyle(
-              fontSize: 20,
+              fontSize: isMobile ? 18 : 20,
               fontWeight: FontWeight.bold,
-              color: Color(0xFF002c57),
+              color: const Color(0xFF002c57),
             ),
           ),
           const SizedBox(height: 16),
